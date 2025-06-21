@@ -10,7 +10,15 @@
 </head>
 <body>
   <div id="imageContainer">
-    <img src="https://raw.githubusercontent.com/Quantum-0/q0-ttv-bot/refs/heads/main/tosha_jump_1.webp" alt="Jumping Image">
+    <img id="img_get_up" src="./images/get-up.webp" alt="Chibi image">
+    <img id="img_sit_down" src="./images/sit-down.apng" alt="Chibi image">
+    <img id="img_sit" src="images/sit2.webp.png" alt="Chibi image">
+    <img id="img_fall_asleep" src="images/fall-asleep.webp" alt="Chibi image">
+    <img id="img_wake_up" src="images/wake-up.webp" alt="Chibi image">
+    <img id="img_sleep" src="images/sleep.webp" alt="Chibi image">
+    <img id="img_walk" src="images/stay.webp" alt="Chibi image">
+    <img id="img_stay" src="images/stay.webp" alt="Chibi image">
+    <img id="img_climb" src="images/stay.webp" alt="Chibi image">
   </div>
 
 
@@ -19,14 +27,17 @@
 
     <div class="w3-margin">
       <div class="w3-padding-small w3-container w3-border w3-border-red w3-round">
-        <div class="w3-third w3-left w3-left-align">Current status:</div>
-        <div class="w3-third w3-right w3-right-align" id="debug_status">Текущий статус чибика</div>
+        <div class="w3-third w3-left w3-left-align" style="display: inline-block">Current status:</div>
+        <div class="w3-third w3-right w3-right-align" style="display: inline-block">
+          <div id="debug_status" style="display: inline-block">Текущий статус чибика</div>
+          <div id="state_timer" style="display: inline-block">0 ms</div>
+        </div>
       </div>
     </div>
 
     <div class="w3-margin">
       <label>Log:</label>
-      <div class="w3-input w3-border w3-border-red w3-round" type="text" id="debug-log">
+      <div class="w3-tiny w3-input w3-border w3-border-red w3-round" type="text" id="debug-log">
       </div>
     </div>
 

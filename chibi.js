@@ -1,4 +1,4 @@
-let chibi_state = "sit";
+let chibi_state = "";
 let chibi_x = 0.85;
 let chibi_y = 0;
 let chibi_align = "bottom";
@@ -13,28 +13,58 @@ const chibi_width = 100;
 const chibi_height = 100;
 const imageContainer = document.getElementById('imageContainer');
 
+const target_list = [];
+let current_target = null;
+let last_state_update = Date.now()
+
 function change_state(state) {
     if (state === chibi_state)
         return;
     console.log(`Changing chibi state to '${state}'`);
-    if (!["sit", "sleep", "stay", "walk", "fall", "climb"].includes(state)) {
+    if (!["sit", "sit_down", "fall_asleep", "sleep", "wake_up", "get_up", "stay", "walk", "fall", "climb"].includes(state)) {
         console.error(`Unknown state: ${state}`);
         return;
     }
+    last_state_update = Date.now()
     debug_chibi_state(state);
+    for (let i = 0; i < imageContainer.children.length; i++) {
+        imageContainer.children[i].style.display = 'none';
+    }
     switch (state) {
         case "sit":
             chibi_state = "sit";
-            // todo: change image
+            document.getElementById('img_sit').style.display = 'block';
             break;
+        case "sit_down":
+            chibi_state = "sit_down";
+            document.getElementById('img_sit_down').style.display = 'block';
+            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            setTimeout(() => change_state("sit"), 1000);
+        case "fall_asleep":
+            chibi_state = "fall_asleep";
+            document.getElementById('img_fall_asleep').style.display = 'block';
+            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            setTimeout(() => change_state("sleep"), 1000);
         case "sleep":
             chibi_state = "sleep";
             break;
+        case "wake_up":
+            chibi_state = "wake_up";
+            document.getElementById('img_wake_up').style.display = 'block';
+            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            setTimeout(() => change_state("sit"), 1000);
+        case "get_up":
+            chibi_state = "get_up"
+            document.getElementById('img_get_up').style.display = 'block';
+            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            setTimeout(() => change_state("stay"), 1000);
         case "stay":
             chibi_state = "stay";
+            document.getElementById('img_stay').style.display = 'block';
             break;
         case "walk":
             chibi_state = "walk";
+            document.getElementById('img_walk').style.display = 'block';
             break;
         case "fall":
             chibi_state = "fall";
@@ -183,3 +213,72 @@ function updateImage() {
     requestAnimationFrame(updateImage);
 }
 requestAnimationFrame(updateImage);
+
+function chibiGotoSmart() {
+    if (chibi_state === "sleep") {
+        change_state("wake_up");
+        setTimeout(chibiGotoSmart, 1000+30);
+        return;
+    }
+
+    if (chibi_state === "sit") {
+        change_state("get_up");
+        setTimeout(chibiGotoSmart, 1000+30);
+        return;
+    }
+
+    if (current_target.y < 1/16) {
+        chibiGoto(current_target.x, 0);
+    }
+
+    // Определяем как дойти до точки
+    // chibiGoto по порядку
+    //  не высоко - доходим снизу и прыгаем
+    //  на земле - доходим и достаём
+    //  у стены - доходим до стены, залезаем, хватаем
+    //  другое место - залезаем на потолок, оттуда прыгаем, хватаем
+
+    setTimeout(() => check_catch_target(chibiGotoSmart));
+}
+
+function check_catch_target(callback) {
+    if (current_target === null)
+        return;
+
+    const delta_x = Math.abs(chibi_x - current_target.x);
+    const delta_y = Math.abs(chibi_y - current_target.y);
+    if (delta_x < 1/16 && delta_y < 1/16) {
+        current_target = null;
+        console.log("Target was caught");
+        callback();
+    }
+    else
+    {
+        setTimeout(() => check_catch_target(callback), 10);
+    }
+}
+
+function timer_update() {
+    const now = Date.now();
+
+    if ((chibi_state === "stay") && (now - last_state_update) > 10000) {
+        change_state("sit_down");
+    }
+    if ((chibi_state === "sit") && (now - last_state_update) > 20000) {
+        change_state("fall_asleep");
+    }
+    if ((chibi_state === "sleep") && (now - last_state_update) > 30000 && Math.random() < 0.05) {
+        change_state("wake_up");
+    }
+
+    if (target_list.length === 0)
+        return;
+
+    current_target = target_list.pop();
+    console.log("Got new target");
+    chibiGotoSmart();
+}
+
+
+setInterval(timer_update, 1000);
+change_state("stay");
