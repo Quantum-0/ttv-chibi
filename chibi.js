@@ -118,8 +118,15 @@ function continue_moving() {
         chibi_y -= fly_speed;
         fly_speed += 0.0003;
     }
-    else {
+    // else {
+    //     fly_speed = 0;
+    // }
+    else if (chibi_state === "fall" && chibi_y <= 0)
+    {
+        fly_rotation = 0;
         fly_speed = 0;
+        change_state("walk");
+        console.log(`Finish falling`);
     }
     // console.log(123);
     requestAnimationFrame(continue_moving);
