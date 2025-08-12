@@ -30,41 +30,46 @@ function change_state(state) {
     for (let i = 0; i < imageContainer.children.length; i++) {
         imageContainer.children[i].style.display = 'none';
     }
+
+    let imgElement;
     switch (state) {
         case "sit":
             chibi_state = "sit";
-            document.getElementById('img_sit').style.display = 'block';
+            imgElement = document.getElementById('img_sit');
             break;
         case "sit_down":
             chibi_state = "sit_down";
-            document.getElementById('img_sit_down').style.display = 'block';
+            imgElement =  document.getElementById('img_sit_down');
             // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
             setTimeout(() => change_state("sit"), 1000);
+            break;
         case "fall_asleep":
             chibi_state = "fall_asleep";
-            document.getElementById('img_fall_asleep').style.display = 'block';
+            imgElement = document.getElementById('img_fall_asleep');
             // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
-            setTimeout(() => change_state("sleep"), 1000);
+            setTimeout(() => change_state("sleep"), 2000);
+            break;
         case "sleep":
             chibi_state = "sleep";
+            imgElement = document.getElementById('img_sleep');
             break;
         case "wake_up":
             chibi_state = "wake_up";
-            document.getElementById('img_wake_up').style.display = 'block';
-            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            imgElement = document.getElementById('img_wake_up');
             setTimeout(() => change_state("sit"), 1000);
+            break;
         case "get_up":
             chibi_state = "get_up"
-            document.getElementById('img_get_up').style.display = 'block';
-            // document.getElementById('img_sit_down').src = document.getElementById('img_sit_down').src.split('?')[0] + '?' + new Date().getTime();
+            imgElement = document.getElementById('img_get_up');
             setTimeout(() => change_state("stay"), 1000);
+            break;
         case "stay":
             chibi_state = "stay";
-            document.getElementById('img_stay').style.display = 'block';
+            imgElement = document.getElementById('img_stay');
             break;
         case "walk":
             chibi_state = "walk";
-            document.getElementById('img_walk').style.display = 'block';
+            imgElement = document.getElementById('img_walk');
             break;
         case "fall":
             chibi_state = "fall";
@@ -75,6 +80,8 @@ function change_state(state) {
         default:
             console.error(`Unknown state: ${state}`);
     }
+    imgElement.style.display = 'block';
+    imgElement.src = imgElement.src.split('?')[0] + '?' + new Date().getTime();
 }
 
 function chibiGoto(x, y, continue_moving=false) {
